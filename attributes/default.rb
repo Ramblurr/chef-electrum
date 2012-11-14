@@ -1,0 +1,1 @@
+default['electrum']['user'] = 'bitcoin'
