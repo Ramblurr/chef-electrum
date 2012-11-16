@@ -155,14 +155,37 @@ template "/etc/electrum.conf" do
   variables :conf=> node['electrum']['conf'].to_hash
 end
 
-# install init script
-template "/etc/init.d/bitcoind" do
-  source "bitcoind.init.erb"
+# install init scripts and binary wrappers
+
+template "#{node['electrum']['prefix']}/bin/electrum-start" do
+  source "electrum-start.erb"
   owner "root"
   group "root"
   mode "755"
 end
 
+template "#{node['electrum']['prefix']}/bin/electrum-stop" do
+  source "electrum-stop.erb"
+  owner "root"
+  group "root"
+  mode "755"
+end
+
+template "/etc/init.d/bitcoind" do
+  source "bitcoind.init.erb"
+  owner "root"
+  group "root"
+  mode "755"
+  notifies :enable, "service[bitcoind]"
+end
+
+template "/etc/init.d/electrum" do
+  source "electrum.init.erb"
+  owner "root"
+  group "root"
+  mode "755"
+  notifies :enable, "service[electrum]"
+end
 
 # bootstrap
 
@@ -172,3 +195,14 @@ remote_file "/home/#{node['electrum']['bitcoin_user']}/.bitcoin/bootstrap.dat" d
   checksum node['electrum']['bootstrap_sha256']
 end
 
+# go go services!
+
+service "bitcoind" do
+  supports :restart => true, :start => true, :stop => true, :reload => true
+  action :nothing
+end
+
+service "electrum" do
+  supports :restart => true, :start => true, :stop => true, :reload => true
+  action :nothing
+end

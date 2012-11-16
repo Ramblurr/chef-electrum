@@ -1,0 +1,58 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:             electrum
+# Required-Start:       $all
+# Required-Stop:        $all
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    Electrum Bitcoin Server
+### END INIT INFO
+
+NAME=electrum
+DESC="heavyweight bitcoin server"
+PYTHON=/usr/bin/python
+STARTPROG=<%= node['electrum']['prefix'] %>/bin/electrum-start
+STOPPROG=<%= node['electrum']['prefix'] %>/bin/electrum-stop
+LOG=/var/log/electrum/$NAME.log
+USER=<%= node['electrum']['electrum_user'] %>
+
+set -e
+
+# Make sure the binary and the config file are present before proceeding
+test -x $PROG || exit 1
+
+test -f /etc/electrum.conf || exit 1
+
+. /lib/lsb/init-functions
+
+RETVAL=0
+
+case "$1" in
+  start)
+    echo -n "Starting $DESC: "
+    su -c "$STARTPROG $LOG" $USER
+    RETVAL=$?
+    echo "$NAME."
+    ;;
+  stop)
+    echo -n "Stopping $DESC: "
+    su -c "$STOPPROG" $USER
+    RETVAL=$?
+    echo "$NAME."
+    ;;
+  restart)
+    echo -n "Restarting $DESC: "
+    $STOPPROG
+    su -c "$STOPPROG" $USER
+    su -c "$STARTPROG $LOG" $USER
+    RETVAL=$?
+    echo "$NAME."
+    ;;
+  *)
+    echo "Usage: electrum {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit $RETVAL
