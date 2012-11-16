@@ -99,6 +99,8 @@ end
 
 config = data_bag_item('electrum', 'conf')['config']
 node.override['electrum']['conf'] = config
+node.override['electrum']['conf']['bitcoind']['user'] = node['electrum']['bitcoin']['rpcuser']
+node.override['electrum']['conf']['bitcoind']['password'] = node['electrum']['bitcoin']['rpcpassword']
 
 # install tls certs
 
