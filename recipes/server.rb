@@ -83,7 +83,7 @@ node.override['electrum']['bitcoin'] = bitcoin_config
 directory "/home/#{node['electrum']['user']}/.bitcoin/" do
   owner node['electrum']['user']
   group node['electrum']['user']
-  mode "600"
+  mode "700"
   action :create
 end
 
@@ -92,7 +92,7 @@ template "/home/#{node['electrum']['user']}/.bitcoin/bitcoin.conf" do
   owner node['electrum']['user']
   group node['electrum']['user']
   variables :conf=> node['electrum']['bitcoin'].to_hash
-  mode "600"
+  mode "700"
 end
 
 # load configuration from databag and override
