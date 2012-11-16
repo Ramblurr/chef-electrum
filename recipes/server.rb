@@ -187,14 +187,6 @@ template "/etc/init.d/electrum" do
   notifies :enable, "service[electrum]"
 end
 
-# bootstrap
-
-remote_file "/home/#{node['electrum']['bitcoin_user']}/.bitcoin/bootstrap.dat" do
-  only_if { node['electrum']['bootstrap'] }
-  source node['electrum']['bootstrap_url']
-  checksum node['electrum']['bootstrap_sha256']
-end
-
 # go go services!
 
 service "bitcoind" do
