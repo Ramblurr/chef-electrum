@@ -1,5 +1,6 @@
 default['electrum']['user'] = 'bitcoin'
 default['electrum']['prefix'] = '/usr/local/'
+default['electrum']['certs_path'] = '/etc/ssl/electrum'
 
 default['electrum']['bootstrap'] = false
 default['electrum']['bootstrap_url'] = 'http://eu2.bitcoincharts.com/blockchain/bootstrap.dat'

@@ -90,15 +90,56 @@ template "/home/#{node['electrum']['user']}/.bitcoin/bitcoin.conf" do
   mode "600"
 end
 
-# configure electrum
 
+
+config = data_bag_item('electrum', 'conf')['config']
+node.override['electrum']['conf'] = config
+
+# install tls certs
+
+certs = data_bag_item('electrum', 'certs')
+
+if certs['ssl_cert']
+    directory node['electrum']['certs_path'] do
+      owner node['electrum']['user']
+      group node['electrum']['user']
+      mode "640"
+      action :create
+    end
+end
+
+if certs['ssl_cert']
+    template "#{node['electrum']['certs_path']}/electrum.crt" do
+        source 'cert.erb'
+        owner node['electrum']['user']
+        owner node['electrum']['user']
+        mode '0640'
+        variables :cert => certs['ssl_cert']
+    end
+    node.set['electrum']['conf']['server']['ssl_certfile'] = "#{node['electrum']['certs_path']}/electrum.crt"
+end
+
+if certs['ssl_key']
+    template "#{node[:electrum][:certs_path]}/electrum.key" do
+        source 'cert.erb'
+        owner node[:electrum][:user]
+        owner node[:electrum][:user]
+        mode '0640'
+        variables :cert => certs['ssl_key']
+    end
+    node.set['electrum']['conf']['server']['ssl_keyfile'] = "#{node['electrum']['certs_path']}/electrum.key"
+end
+
+# configure electrum
+#
 template "/etc/electrum.conf" do
   source "electrum.conf.erb"
   owner node['electrum']['user']
   group node['electrum']['user']
   mode "600"
-  variables :conf=> node["electrum"]["conf"].to_hash
+  variables :conf=> node['electrum']['conf'].to_hash
 end
+
 
 # bootstrap
 
