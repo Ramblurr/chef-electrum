@@ -1,4 +1,5 @@
-default['electrum']['user'] = 'bitcoin'
+default['electrum']['electrum_user'] = 'electrum'
+default['electrum']['bitcoin_user'] = 'bitcoin'
 default['electrum']['prefix'] = '/usr/local/'
 default['electrum']['certs_path'] = '/etc/ssl/electrum'
 

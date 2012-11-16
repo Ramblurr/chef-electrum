@@ -63,11 +63,19 @@ bash "build_bitcoind" do
   EOF
 end
 
-# setup system user
+# setup system users
 
-user_account node['electrum']['user'] do
+user_account node['electrum']['electrum_user'] do
+  comment   'electrum user'
+  home      "/home/#{node['electrum']['electrum_user']}"
+  system_user false
+  shell '/bin/false'
+  ssh_keygen false
+end
+
+user_account node['electrum']['bitcoin_user'] do
   comment   'Bitcoin user'
-  home      "/home/#{node['electrum']['user']}"
+  home      "/home/#{node['electrum']['bitcoin_user']}"
   system_user false
   shell '/bin/false'
   ssh_keygen false
@@ -80,17 +88,17 @@ node.override['electrum']['bitcoin'] = bitcoin_config
 
 # configure bitcoind
 
-directory "/home/#{node['electrum']['user']}/.bitcoin/" do
-  owner node['electrum']['user']
-  group node['electrum']['user']
+directory "/home/#{node['electrum']['bitcoin_user']}/.bitcoin/" do
+  owner node['electrum']['bitcoin_user']
+  group node['electrum']['bitcoin_user']
   mode "700"
   action :create
 end
 
-template "/home/#{node['electrum']['user']}/.bitcoin/bitcoin.conf" do
+template "/home/#{node['electrum']['bitcoin_user']}/.bitcoin/bitcoin.conf" do
   source "bitcoin.conf.erb"
-  owner node['electrum']['user']
-  group node['electrum']['user']
+  owner node['electrum']['bitcoin_user']
+  group node['electrum']['bitcoin_user']
   variables :conf=> node['electrum']['bitcoin'].to_hash
   mode "700"
 end
@@ -108,8 +116,8 @@ certs = data_bag_item('electrum', 'certs')
 
 if certs['ssl_cert']
     directory node['electrum']['certs_path'] do
-      owner node['electrum']['user']
-      group node['electrum']['user']
+      owner node['electrum']['electrum_user']
+      group node['electrum']['electrum_user']
       mode "640"
       action :create
     end
@@ -118,8 +126,8 @@ end
 if certs['ssl_cert']
     template "#{node['electrum']['certs_path']}/electrum.crt" do
         source 'cert.erb'
-        owner node['electrum']['user']
-        owner node['electrum']['user']
+        owner node['electrum']['electrum_user']
+        owner node['electrum']['electrum_user']
         mode '0640'
         variables :cert => certs['ssl_cert']
     end
@@ -129,8 +137,8 @@ end
 if certs['ssl_key']
     template "#{node[:electrum][:certs_path]}/electrum.key" do
         source 'cert.erb'
-        owner node[:electrum][:user]
-        owner node[:electrum][:user]
+        owner node[:electrum][:electrum_user]
+        owner node[:electrum][:electrum_user]
         mode '0640'
         variables :cert => certs['ssl_key']
     end
@@ -141,16 +149,24 @@ end
 
 template "/etc/electrum.conf" do
   source "electrum.conf.erb"
-  owner node['electrum']['user']
-  group node['electrum']['user']
+  owner node['electrum']['electrum_user']
+  group node['electrum']['electrum_user']
   mode "600"
   variables :conf=> node['electrum']['conf'].to_hash
+end
+
+# install init script
+template "/etc/init.d/bitcoind" do
+  source "bitcoind.init.erb"
+  owner "root"
+  group "root"
+  mode "755"
 end
 
 
 # bootstrap
 
-remote_file "/home/#{node['electrum']['user']}/.bitcoin/bootstrap.dat" do
+remote_file "/home/#{node['electrum']['bitcoin_user']}/.bitcoin/bootstrap.dat" do
   only_if { node['electrum']['bootstrap'] }
   source node['electrum']['bootstrap_url']
   checksum node['electrum']['bootstrap_sha256']
