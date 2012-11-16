@@ -12,6 +12,7 @@ include_recipe "python::virtualenv"
 
 if platform?("debian")
   package "libdb4.8-dev"
+  package "libdb4.8++-dev"
   package "libboost-all-dev"
   package "libssl-dev"
 end
