@@ -6,7 +6,7 @@ electrum-server: https://github.com/spesmilo/electrum-server
 
 # Requirements
 
-bitcoin-abe: https://github.com/ramburr/chef-bitcoin-abe
+This cookbook supports abe+postgresql backend, or leveldb. The default is leveldb.
 
 # Usage
 
