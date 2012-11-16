@@ -93,6 +93,8 @@ end
 
 
 
+# load configuration from databag and override
+
 config = data_bag_item('electrum', 'conf')['config']
 node.override['electrum']['conf'] = config
 
@@ -132,7 +134,7 @@ if certs['ssl_key']
 end
 
 # configure electrum
-#
+
 template "/etc/electrum.conf" do
   source "electrum.conf.erb"
   owner node['electrum']['user']
