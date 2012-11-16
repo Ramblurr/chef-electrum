@@ -1,6 +1,6 @@
-<% @conf.each do |section| %>
+<% @conf.each do |section,values| %>
     [<%= section %>]
-    <% section.each do do |key, value| %>
+    <% values.each do |key, value| %>
         <%= key %> = <%= value %>
     <% end %>
 <% end -%>
