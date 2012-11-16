@@ -47,7 +47,7 @@ end
 
 git "#{node['electrum']['prefix']}/src/bitcoin" do
   repository "git://github.com/bitcoin/bitcoin.git"
-  reference "master"
+  reference "v0.7.1"
   action :sync
 end
 
