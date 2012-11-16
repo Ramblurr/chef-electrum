@@ -23,6 +23,7 @@ if platform?("ubuntu")
       components ["main"]
       keyserver "keyserver.ubuntu.com"
       key "C70EF1F0305A1ADB9986DBD8D46F45428842CE5E"
+      not_if "dpkg -l | grep libdb4.8++ &> /dev/null"
   end
   package "libdb4.8-dev"
   package "libdb4.8++-dev"
