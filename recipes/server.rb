@@ -187,6 +187,13 @@ template "/etc/init.d/electrum" do
   notifies :enable, "service[electrum]"
 end
 
+directory "/var/log/electrum" do
+  owner node['electrum']['electrum_user']
+  group node['electrum']['electrum_user']
+  mode "700"
+  action :create
+end
+
 # go go services!
 
 service "bitcoind" do
