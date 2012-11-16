@@ -10,9 +10,17 @@ include_recipe "python::virtualenv"
 
 # install dependencies
 
-package "libdb4.8-dev"
-package "libboost-all-dev"
-package "libssl-dev"
+if platform?("debian")
+  package "libdb4.8-dev"
+  package "libboost-all-dev"
+  package "libssl-dev"
+end
+
+if platform?("ubuntu")
+  package "libdb4.8-dev"
+  package "libboost-all-dev"
+  package "libssl-dev"
+end
 
 python_pip "jsonrpclib" do
   virtualenv "#{node['electrum']['prefix']}"
