@@ -71,6 +71,11 @@ user_account node['electrum']['user'] do
   shell '/bin/false'
 end
 
+# load bitcoin.conf configuration from databag and override
+
+bitcoin_config = data_bag_item('electrum', 'bitcoin')['config']
+node.override['electrum']['bitcoin'] = bitcoin_config
+
 # configure bitcoind
 
 directory "/home/#{node['electrum']['user']}/.bitcoin/" do
@@ -80,18 +85,13 @@ directory "/home/#{node['electrum']['user']}/.bitcoin/" do
   action :create
 end
 
-passwords = data_bag_item('electrum', 'passwords')
-
 template "/home/#{node['electrum']['user']}/.bitcoin/bitcoin.conf" do
   source "bitcoin.conf.erb"
   owner node['electrum']['user']
   group node['electrum']['user']
-  variables(:rpcuser => passwords['bitcoind']['rpcuser'],
-            :rpcpass => passwords['bitcoind']['rpcpass'])
+  variables :conf=> node['electrum']['bitcoin'].to_hash
   mode "600"
 end
-
-
 
 # load configuration from databag and override
 
@@ -151,3 +151,4 @@ remote_file "/home/#{node['electrum']['user']}/.bitcoin/bootstrap.dat" do
   source node['electrum']['bootstrap_url']
   checksum node['electrum']['bootstrap_sha256']
 end
+

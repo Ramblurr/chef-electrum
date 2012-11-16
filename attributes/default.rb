@@ -8,6 +8,9 @@ default['electrum']['bootstrap'] = false
 default['electrum']['bootstrap_url'] = 'http://eu2.bitcoincharts.com/blockchain/bootstrap.dat'
 default['electrum']['bootstrap_sha256'] = 'a3f258e7af030165360596e4cb0b9beb24b4ce97352c22e65349b89ad5fc5d3e'
 
+#bitcoin.conf settings
+default['electrum']['bitcoin']['daemon'] = '1'
+
 # electrum.conf settings
 default['electrum']['conf']['server']['host'] = "hostname"
 default['electrum']['conf']['server']['native_port'] = "50000"
