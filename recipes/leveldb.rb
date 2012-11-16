@@ -10,7 +10,7 @@ include_recipe "python::virtualenv"
 # install dependencies
 
 if platform?("debian")
-  if platform_version =~ /squeeze/
+  if node[:platform_version].to_i < 7.0
     apt_repository "testing" do
       uri "http://ftp.us.debian.org/debian/"
       components ["wheezy","main", "contrib"]
