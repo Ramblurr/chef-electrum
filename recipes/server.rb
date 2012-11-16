@@ -17,7 +17,15 @@ if platform?("debian")
 end
 
 if platform?("ubuntu")
+  apt_repository "bitcoin" do
+      uri "http://ppa.launchpad.net/bitcoin/bitcoin/ubuntu"
+      distribution node['lsb']['codename']
+      components ["main"]
+      keyserver "keyserver.ubuntu.com"
+      key "C70EF1F0305A1ADB9986DBD8D46F45428842CE5E"
+  end
   package "libdb4.8-dev"
+  package "libdb4.8++-dev"
   package "libboost-all-dev"
   package "libssl-dev"
 end
