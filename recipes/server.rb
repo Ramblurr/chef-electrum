@@ -56,7 +56,7 @@ bash "build_bitcoind" do
   user "root"
   cwd "#{node['electrum']['prefix']}/src/bitcoin"
   code <<-EOF
-    patch -p1 < #{node['electrum']['prefix']}/src/electrum/patch/patch
+    patch -N -p1 < #{node['electrum']['prefix']}/src/electrum/patch/patch
     cd src && make -f makefile.unix USE_UPNP= USE_IPV6=1 -j2 && cp ./bitcoind #{node['electrum']['prefix']}/bin/bitcoind
   EOF
 end
