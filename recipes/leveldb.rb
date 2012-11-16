@@ -33,7 +33,14 @@ if platform?("ubuntu")
   package "python-leveldb"
 end
 
-node.default['electrum']['conf']['leveldb']['path'] = "/var/db/leveldb"
+node.default['electrum']['conf']['leveldb']['path'] = "/var/local/electrum"
+
+directory node['electrum']['conf']['leveldb']['path'] do
+  owner node['electrum']['electrum_user']
+  group node['electrum']['electrum_user']
+  mode "700"
+  action :create
+end
 
 include_recipe "electrum::server"
 
