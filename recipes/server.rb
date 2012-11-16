@@ -67,7 +67,7 @@ end
 
 user_account node['electrum']['electrum_user'] do
   comment   'electrum user'
-  home      "/home/#{node['electrum']['electrum_user']}"
+  manage_home false
   system_user false
   shell '/bin/false'
   ssh_keygen false
