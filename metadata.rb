@@ -1,4 +1,4 @@
-name             "electrum-server"
+name             "electrum"
 maintainer       "Casey Link"
 maintainer_email "unnamedrambler@gmail.com"
 license          "GNU Affero General Public License"

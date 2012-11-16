@@ -1,26 +1,51 @@
 #
-# Cookbook Name:: electrum
-# Recipe:: default
+# Cookbook Name:: electrum-server
+# Recipe:: basic server
 #
 # Copyright (C) 2012 Casey Link <unnamedrambler@gmail.com>
-# 
 #
+
 include_recipe "python::pip"
 include_recipe "python::virtualenv"
-include_recipe "bitcoin-abe"
 
-package "bitcoind"
+# install dependencies
+
+package "libdb4.8-dev"
+package "libboost-all-dev"
+package "libssl-dev"
 
 python_pip "jsonrpclib" do
-  virtualenv "#{node['bitcoin-abe']['python_dir']}"
+  virtualenv "#{node['electrum']['prefix']}"
   action :install
 end
 
-git "#{node['bitcoin-abe']['dir']}/electrum" do
+# fetch electrum sources
+
+git "#{node['electrum']['prefix']}/src/electrum" do
   repository "https://github.com/spesmilo/electrum-server.git"
   reference "master"
   action :sync
 end
+
+# build patched bitcoind
+
+git "#{node['electrum']['prefix']}/src/bitcoin" do
+  repository "git://github.com/bitcoin/bitcoin.git"
+  reference "master"
+  action :sync
+end
+
+bash "build_bitcoind" do
+  not_if "stat #{node['electrum']['prefix']}/bin/bitcoind"
+  user "root"
+  cwd "#{node['electrum']['prefix']}/src/bitcoin"
+  code <<-EOF
+    patch -p1 < #{node['electrum']['prefix']}/src/electrum/patch/patch
+    cd src && make -f makefile.unix USE_UPNP= USE_IPV6=1 -j2 && cp ./bitcoind #{node['electrum']['prefix']}/bin/bitcoind
+  EOF
+end
+
+# setup system user
 
 user_account node['electrum']['user'] do
   comment   'Bitcoin user'
@@ -28,9 +53,13 @@ user_account node['electrum']['user'] do
   system_user false
   shell '/bin/false'
 end
+
+# configure bitcoind
+
 directory "/home/#{node['electrum']['user']}/.bitcoin/" do
   owner node['electrum']['user']
   group node['electrum']['user']
+  mode "600"
   action :create
 end
 
@@ -45,10 +74,20 @@ template "/home/#{node['electrum']['user']}/.bitcoin/bitcoin.conf" do
   mode "600"
 end
 
+# configure electrum
+
 template "/etc/electrum.conf" do
   source "electrum.conf.erb"
   owner node['electrum']['user']
   group node['electrum']['user']
   mode "600"
   variables :conf=> node["electrum"]["conf"].to_hash
+end
+
+# bootstrap
+
+remote_file "/home/#{node['electrum']['user']}/.bitcoin/bootstrap.dat" do
+  only_if { node['electrum']['bootstrap'] }
+  source node['electrum']['bootstrap_url']
+  checksum node['electrum']['bootstrap_sha256']
 end

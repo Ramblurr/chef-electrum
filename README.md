@@ -1,4 +1,4 @@
-# electrum-server cookbook
+# electrum cookbook
 
 Install and configure an electrum server.
 
