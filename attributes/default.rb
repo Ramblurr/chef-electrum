@@ -3,7 +3,8 @@ default['electrum']['bitcoin_user'] = 'bitcoin'
 default['electrum']['prefix'] = '/usr/local/'
 default['electrum']['certs_path'] = '/etc/ssl/electrum'
 
-default['electrum']['bitcoin_tag'] = 'v0.7.1'
+default['electrum']['bitcoin_force'] = false
+default['electrum']['bitcoin_tag'] = 'f4112f87f95c6b5e406612906a7904adf1b4df34'
 
 #bitcoin.conf settings
 default['electrum']['bitcoin']['daemon'] = '1'
