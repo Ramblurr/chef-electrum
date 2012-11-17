@@ -1,3 +1,7 @@
 <% @conf.each do |key,value| %>
+<% if value %>
 <%= key %>=<%= value %>
+<% else %>
+<%= key %>
+<% end %>
 <% end %>
