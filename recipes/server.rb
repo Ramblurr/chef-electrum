@@ -70,7 +70,7 @@ user_account node['electrum']['electrum_user'] do
   manage_home false
   system_user false
   shell '/bin/false'
-  ssh_keygen false
+  ssh_keygen 'false'
 end
 
 user_account node['electrum']['bitcoin_user'] do
@@ -78,7 +78,7 @@ user_account node['electrum']['bitcoin_user'] do
   home      "/home/#{node['electrum']['bitcoin_user']}"
   system_user false
   shell '/bin/false'
-  ssh_keygen false
+  ssh_keygen 'false'
 end
 
 # load bitcoin.conf configuration from databag and override
