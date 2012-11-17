@@ -54,7 +54,7 @@ git "#{node['electrum']['prefix']}/src/bitcoin" do
 end
 
 bash "build_bitcoind" do
-  not_if "stat #{node['electrum']['prefix']}/bin/bitcoind"
+  not_if { not node['electrum']['bitcoin_force'] and File.exists?("#{node['electrum']['prefix']}/bin/bitcoind") }
   user "root"
   cwd "#{node['electrum']['prefix']}/src/bitcoin"
   code <<-EOF
