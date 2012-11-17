@@ -1,5 +1,10 @@
 #!/bin/bash
-PYTHON=/usr/bin/python
-SERVER=<%= node['electrum']['prefix'] %>/src/electrum/server.py
 
+[ `whoami` == "<%= node['electrum']['electrum_user'] %>" ] || exit 1
+
+PYTHON=/usr/bin/python
+CWD=<%= node['electrum']['prefix'] %>/src/electrum
+SERVER=server.py
+
+cd $CWD
 $PYTHON -u $SERVER stop

@@ -31,21 +31,21 @@ RETVAL=0
 case "$1" in
   start)
     echo -n "Starting $DESC: "
-    su -c "$STARTPROG $LOG" $USER
+    su -s /bin/bash -c "$STARTPROG $LOG" $USER
     RETVAL=$?
     echo "$NAME."
     ;;
   stop)
     echo -n "Stopping $DESC: "
-    su -c "$STOPPROG" $USER
+    su -s /bin/bash -c "$STOPPROG" $USER
     RETVAL=$?
     echo "$NAME."
     ;;
   restart)
     echo -n "Restarting $DESC: "
     $STOPPROG
-    su -c "$STOPPROG" $USER
-    su -c "$STARTPROG $LOG" $USER
+    su -s /bin/bash -c "$STOPPROG" $USER
+    su -s /bin/bash -c "$STARTPROG $LOG" $USER
     RETVAL=$?
     echo "$NAME."
     ;;
